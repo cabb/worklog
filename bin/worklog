@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'worklog'
+require 'irb'
+
+if ARGV.empty?
+  Worklog::Loop.new.run
+else
+  Worklog::Cli.new.main(ARGV)
+end

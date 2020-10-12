@@ -1,0 +1,6 @@
+.bundle
+.vscode
+.rspec_status
+data/work.backup
+data/work.log
+vendor
