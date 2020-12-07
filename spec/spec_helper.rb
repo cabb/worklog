@@ -3,8 +3,6 @@
 require 'bundler/setup'
 require 'worklog'
 
-require 'byebug'
-
 require_relative 'factories/entity_factory'
 
 # Metaprogrammatical magic to temporarily expose a Class' privates (methods).

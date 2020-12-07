@@ -91,11 +91,20 @@ module Worklog
         })
     end
 
-    def summary_topics
+    # returns the topic and the time
+    # If extend is set to true, all topics will also have their texts
+    def summary_topics(extend: false)
       topics = duration_by_topic
-      topics.map do |topic, duration|
-        topic = '(empty)' if topic.nil?
-        "#{duration.to_time_str} - #{topic} - #{percentage_of_work(duration)} %"
+
+      if extend == true
+        return topics.map do |name, topic|
+          name = '(empty)' if name.nil?
+          "#{topic[:duration].to_time_str} - #{name} - #{topic[:text]}"
+        end
+      end
+      topics.map do |name, topic|
+        name = '(empty)' if name.nil?
+        "#{topic[:duration].to_time_str} - #{name} - #{percentage_of_work(topic[:duration])}%"
       end
     end
 
@@ -119,9 +128,10 @@ module Worklog
         next if act.pause?
 
         if groups.key?(act.topic)
-          groups[act.topic] += act.duration
+          groups[act.topic][:duration] += act.duration
+          groups[act.topic][:text] += ";" + act.text
         else
-          groups[act.topic] = act.duration
+          groups[act.topic] = { duration: act.duration, text: act.text }
         end
       end
       groups

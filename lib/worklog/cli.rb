@@ -50,6 +50,10 @@ module Worklog
         options[:details] = true
       end
 
+      @optparse.on('-t', 'Detailed output for topic based times') do
+        options[:topics_extend] = true
+      end
+
       @optparse.on('--full-day', 'Delete the active day') do
         options[:day] = true
       end
@@ -101,31 +105,31 @@ module Worklog
 
     def command_delete(args)
       params = delete_params(args)
-      @worklog.delete(params)
+      @worklog.delete(**params)
       puts('Deleted')
     end
 
     def command_done(args)
       params = activity_params(args)
-      activity = @worklog.log_activity(params)
-      puts('Good Job! ' + activity.summary)
+      activity = @worklog.log_activity(**params)
+      puts("Good Job! #{activity.summary}")
     end
 
     def command_list(args)
       params = list_params(args)
-      @worklog.list(params)
+      @worklog.list(**params)
     end
 
     def command_start(args)
       params = start_params(args)
-      day = @worklog.create_day(params)
+      @worklog.create_day(**params)
       puts('Good Morning!')
     end
 
     def command_pause(args)
       params = activity_params(args)
-      pause = @worklog.log_pause(params)
-      puts('Relax! ' + pause.summary)
+      pause = @worklog.log_pause(**params)
+      puts("Relax! #{pause.summary}")
     end
 
     def activity_params(args)
@@ -137,9 +141,7 @@ module Worklog
 
       if options[:duration]
         # has to be a valid duration argument
-        unless Duration.valid_str?(options[:duration])
-          raise CommandArgumentError, 'Invalid duration format'
-        end
+        raise CommandArgumentError, 'Invalid duration format' unless Duration.valid_str?(options[:duration])
 
         params[:duration] = options[:duration]
       end
@@ -161,9 +163,7 @@ module Worklog
       # only one argument is allowed
       raise CommandArgumentError, 'Too many arguments' if args.length > 1
       # has to be a valid time argument
-      unless Tools.correct_time_format?(args[0])
-        raise CommandArgumentError, 'Invalid time format'
-      end
+      raise CommandArgumentError, 'Invalid time format' unless Tools.correct_time_format?(args[0])
 
       { start: Tools.parse_time(args[0]) }
     end
@@ -174,7 +174,8 @@ module Worklog
 
       {
         details: options[:details] ? true : false,
-        overview: options[:overview] ? true : false
+        overview: options[:overview] ? true : false,
+        topics_extend: options[:topics_extend] ? true : false
       }
     end
   end
