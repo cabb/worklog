@@ -39,31 +39,39 @@ module Worklog
     def log_pause(text:, duration: nil)
       day = Day.parse(@log.active_day)
       # calculate duration if it is empty
-      duration = calc_duration(day.end) if duration.nil?
+      duration = duration_since(day.end) if duration.nil?
       pause = Pause.new(start: day.end, duration: duration, text: text)
       @log.append_activity(pause)
 
       pause
     end
 
-    def list(details: false, overview:)
+    def list(details: false, overview: false, topics_extend: false)
       days = @log.content.map do |day_hash|
         Day.parse(day_hash)
       end
 
       days.each do |day|
         puts day.summary
-        print_day_activties(day, details) unless overview
+        if topics_extend
+          print_topic_activities(day)
+        else
+          print_day_activties(day, details) unless overview
+        end
       end
     end
-
-    private
 
     def duration_since(since)
       duration_seconds = (Time.now - since).to_i
       return '0m' if duration_seconds.negative?
 
       Duration.new(seconds: duration_seconds).to_s
+    end
+
+    def print_topic_activities(day)
+      day.summary_topics(extend: true).each do |topic|
+        print_indented topic
+      end
     end
 
     def print_day_activties(day, details)

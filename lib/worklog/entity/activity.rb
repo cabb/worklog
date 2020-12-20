@@ -6,11 +6,7 @@ module Worklog
     TOPIC_TEXT_REGEX = /^(?<topic>[A-Z0-9\-_]+)? (?<text>.*)?$/.freeze
     TYPE = 'A'
 
-    attr_reader :end
-    attr_reader :duration
-    attr_reader :text
-    attr_reader :start
-    attr_reader :topic
+    attr_reader :end, :duration, :text, :start, :topic
 
     def initialize(start:, duration:, text: '', type: TYPE)
       @start = start
@@ -24,7 +20,7 @@ module Worklog
     class << Activity
       def parse(hash)
         hash[:start] = Time.parse(hash[:start])
-        Activity.new(hash)
+        Activity.new(**hash)
       end
     end
 
@@ -43,11 +39,11 @@ module Worklog
 
     def summary
       format('%<duration>s - %<text>s (%<topic>s)',
-        {
-          duration: @duration.to_time_str,
-          text: @text,
-          topic: @topic
-        })
+             {
+               duration: @duration.to_time_str,
+               text: @text,
+               topic: @topic
+             })
     end
 
     def format_start
@@ -62,7 +58,7 @@ module Worklog
     end
 
     def concat_text
-      return @topic + ' ' + @text if @topic
+      return "#{@topic} #{@text}" if @topic
 
       @text
     end

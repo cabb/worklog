@@ -13,7 +13,7 @@ module Worklog
       def parse(hash)
         hash[:start] = Time.parse(hash[:start])
         hash.delete(:type)
-        Pause.new(hash)
+        Pause.new(**hash)
       end
     end
 
