@@ -17,10 +17,7 @@ module Worklog
       @start <=> other.start
     end
 
-    attr_reader :activities
-    attr_reader :pause_time
-    attr_reader :start
-    attr_reader :work_time
+    attr_reader :activities, :pause_time, :start, :work_time
 
     class << Day
       def parse(hash)
@@ -82,13 +79,13 @@ module Worklog
 
     def summary
       format('%<date>s: %<start>s - %<end>s * P %<pause>s (%<work>s)',
-        {
-          date: @start.strftime('%Y-%m-%d'),
-          start: @start.strftime('%H:%M'),
-          end: self.end.strftime('%H:%M'),
-          pause: @pause_time.to_time_str,
-          work: @work_time.to_time_str
-        })
+             {
+               date: @start.strftime('%Y-%m-%d'),
+               start: @start.strftime('%H:%M'),
+               end: self.end.strftime('%H:%M'),
+               pause: @pause_time.to_time_str,
+               work: @work_time.to_time_str
+             })
     end
 
     # returns the topic and the time
@@ -129,7 +126,7 @@ module Worklog
 
         if groups.key?(act.topic)
           groups[act.topic][:duration] += act.duration
-          groups[act.topic][:text] += ";" + act.text
+          groups[act.topic][:text] += "; #{act.text}"
         else
           groups[act.topic] = { duration: act.duration, text: act.text }
         end

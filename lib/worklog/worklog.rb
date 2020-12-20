@@ -55,6 +55,9 @@ module Worklog
         puts day.summary
         if topics_extend
           print_topic_activities(day)
+          puts ''
+          puts '********'
+          puts ''
         else
           print_day_activties(day, details) unless overview
         end
@@ -70,7 +73,7 @@ module Worklog
 
     def print_topic_activities(day)
       day.summary_topics(extend: true).each do |topic|
-        print_indented topic
+        puts topic
       end
     end
 
