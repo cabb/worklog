@@ -39,7 +39,7 @@ module Worklog
     def log_pause(text:, duration: nil)
       day = Day.parse(@log.active_day)
       # calculate duration if it is empty
-      duration = calc_duration(day.end) if duration.nil?
+      duration = duration_since(day.end) if duration.nil?
       pause = Pause.new(start: day.end, duration: duration, text: text)
       @log.append_activity(pause)
 
@@ -60,8 +60,6 @@ module Worklog
         end
       end
     end
-
-    private
 
     def duration_since(since)
       duration_seconds = (Time.now - since).to_i
